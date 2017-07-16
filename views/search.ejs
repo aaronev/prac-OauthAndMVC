@@ -1,0 +1,17 @@
+<%- include header.ejs %>
+
+  <div>
+    <h1>Found</h1>
+    <ul>
+    <% contacts.forEach(function(contact){ %>
+      <h3>
+        <li>
+          First Name: <%=contact.first_name%>, 
+          Last Name:<%=contact.last_name%>
+        </li>
+      </h3>
+    <% })%>
+    </ul>
+  </div>
+
+<%- include footer.ejs %>

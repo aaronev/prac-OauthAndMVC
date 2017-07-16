@@ -5,12 +5,10 @@
       <input name="q" type="search" placeholder="search" value="<%= query %>" autofocus/>
       <input type="submit" style="display: none" />
     </form>
-    <form method="get" action="/sign-out" class="right">
-      <input type="submit" value="Sign Out">
-    </form>
+    <a href="/sign-out" class="right">Sign Out</a>
   <% } else { %>
     <a href="/">Home</a>
-    <a href="/sign_up" class="right">Sign Up</a>
-    <a href="/sign_in" class="right">Sign In</a>
+    <a href="/sign-up" class="right">Sign Up</a>
+    <a href="/sign-in" class="right">Sign In</a>
   <% } %>
 </nav>

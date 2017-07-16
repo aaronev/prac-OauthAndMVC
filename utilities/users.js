@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt')
-const DbUser = require('../database/users')
+const {add, get} = require('../database/database')
 
 const salt = bcrypt.genSaltSync(10)
 const makeSaltedPassword = (plainTextPassword) => 
@@ -11,11 +11,11 @@ const validatePassword = (plainTextPassword, saltedPassword) => {
 
 const addNewUser = (email, password) => {
   const saltedPassword = makeSaltedPassword(password)
-  return DbUser.addNewUser(email, saltedPassword)
+  return add.newUser([email, saltedPassword])
 }
 
 const findOrCreate = (email, tokenSecret) => {
-  return DbUser.findUser(email)
+  return get.userByEmail(email)
   .then((user) => {
     if (!user) {
       return DbUser.addNewUser(email, tokenSecret)
