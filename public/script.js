@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     return !value || /^\s*$/.test(value)
   }
 
-
   var newContactform = document.querySelector('.new-contact-form')
   if (newContactform){
     newContactform.addEventListener('submit', function(event){
@@ -37,5 +36,4 @@ document.addEventListener("DOMContentLoaded", function(event) {
       }
     })
   }
-
 });

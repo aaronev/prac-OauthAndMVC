@@ -2,72 +2,31 @@ const pgp = require('pg-promise')()
 const connectionString = process.env.DATABASE_URL || 'postgres://localhost:5432/contacts'
 const db = pgp(connectionString)
 
-const createContact = function(contact){
-  return db.query(`
-    INSERT INTO
-      contacts (first_name, last_name)
-    VALUES
-      ($1::text, $2::text)
-    RETURNING
-      *
-    `,
-    [
-      contact.first_name,
-      contact.last_name,
-    ])
-    .then(contact => contact[0])
-    .catch(error => error);
+insert = (table, config, values) => 
+  db.none(`INSERT INTO ${table} ${config} VALUES ($1, $2)`, values)
+
+selectAll = table => 
+  db.any(`SELECT * FROM ${table}`)
+
+deleteContact = contactId => 
+  db.none(`DELETE FROM contacts WHERE id = $1`, contactId)
+
+selectCondition = (table, column, value) => 
+  db.any(`SELECT * FROM ${table} WHERE ${column} = $1`, value)
+
+searchForContact = searchQuery => 
+  db.any(`SELECT * FROM contacts WHERE first_name = $1 OR last_name = $1`, searchQuery)
+
+var get = {
+  userByEmail: email => selectCondition('users', 'email', email),
+  userById: id => selectCondition('users', 'id', id),
+  allContacts: () => selectAll('contacts'),
+  contactById: id => selectCondition('contacts', 'id', id)
 }
 
-const getContacts = function(){
-  return db.query(`
-    SELECT
-      *
-    FROM
-      contacts
-    `, [])
-    .then(contacts => contacts)
-    .catch(error => error);
+var add = {
+  contact: values => insert('contacts', '(first_name, last_name)', values),
+  newUser: values => insert('users', '(email, salted_password)', values)
 }
 
-const getContact = function(contactId){
-  return db.one(`
-    SELECT * FROM contacts WHERE id=$1::int LIMIT 1
-    `,
-    [contactId])
-    .then(contact => contact[0])
-    .catch(error => error);
-}
-
-const deleteContact = function(contactId){
-  return db.query(`
-    DELETE FROM
-      contacts
-    WHERE
-      id=$1::int
-    `,
-    [contactId])
-    .catch(error => error);
-}
-
-const searchForContact = function(searchQuery){
-  return db.query(`
-    SELECT
-      *
-    FROM
-      contacts
-    WHERE
-      lower(first_name || ' ' || last_name) LIKE $1::text
-    `,
-    [`%${searchQuery.toLowerCase().replace(/\s+/,'%')}%`])
-    .then(contact => contact[0])
-    .catch(error => error);
-}
-
-module.exports = {
-  createContact,
-  getContacts,
-  getContact,
-  deleteContact,
-  searchForContact,
-}
+module.exports = { get, add, searchForContact, deleteContact }

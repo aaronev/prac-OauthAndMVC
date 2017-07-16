@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "start:dev": "nodemon server.js",
-    "db:reset": "dropdb contacts && createdb contacts && npm run load_schema",
+    "db:reset": "dropdb contacts && createdb contacts && npm run load_schema && npm run load_contacts",
     "load_schema": "psql contacts < ./database/schema.sql",
     "load_contacts": "psql contacts < ./database/contacts.sql",
     "test": "echo \"Error: no test specified\" && exit 1"
